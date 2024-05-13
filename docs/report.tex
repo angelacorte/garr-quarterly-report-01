@@ -35,7 +35,12 @@
 \acrodef{AC}{Aggregate Computing}
 \acrodef{dsl}[DSL]{Domain Specific Language}
 \acrodef{ast}[AST]{Abstract Syntax Tree}
-\acrodef{xc}[XC]{eXchange Calculus}
+\acrodef{xc}[XC]{\emph{eXchange Calculus}}
+\acrodef{ci}[CI]{\emph{Continuous Integration}}
+\acrodef{cd}[CD]{\emph{Continuous Deployment}}
+\acrodef{cicd}[CI/CD]{\ac{ci} and \ac{cd}}
+\acrodef{vmc}[VMC]{Vascular Morphogenesis Controller}
+
 \newcommand{\ck}{\emph{Collektive}}
 
 \title{\LARGE
@@ -104,7 +109,7 @@ Di seguito illustrerò i task svolti fino ad ora.
     \label{fig:timeline}
 \end{figure}
 
-\subsection{Task T1 [Design del DSL]}\label{subsec:t1}
+\subsection{Design del DSL [Task T1]}\label{subsec:t1}
 
 \paragraph{DSL}
 Per prima cosa è servito capire quali fossero effettivamente i costrutti necessari da inserire all'interno del DSL di \ck{}\footnote{
@@ -168,15 +173,59 @@ Per fare ciò, è stato implementato un plugin per il compilatore di Kotlin, che
     durante la valutazione del programma, in modo da poter creare un path di esecuzione che permetta di allineare i dispositivi
     tra di loro.
 
-\subsection{Task T2 [Costruzione di una standard library]}\label{subsec:task-t2-[costruzione-di-una-standard-library]}
+\subsection{Costruzione di una standard library [Task T2]}\label{subsec:task-t2-[costruzione-di-una-standard-library]}
 
-\subsection{Task T3 [Targeting multiplatform]}\label{subsec:task-t3-[targeting-multiplatform]}
+Per capire quali fossero le principali funzionalità necessarie in una standard library,
+è stato deciso di implementare una generalizzazione di un noto algoritmo in letteratura, chiamato \ac{vmc},
+applicando un approccio basato su \ac{AC} e \ac{FC}, utilizzando il \ac{dsl} di \ck{}.
+
+\ac{vmc} permette di modellare la crescita di strutture artificiali nel tempo, ispirandosi alla morfogenesi delle piante.
+%
+L'algoritmo si basa su un modello di distribuzione delle risorse in strutture ad albero,
+    dove i rami competono per le risorse per crescere, in base al successo ottenuto come input da sensori nell'ambiente.
+
+Implementando l'algoritmo con \ck{}, è stato possibile identificare le funzionalità chiave da cui partire per costruire la standard library,
+    confrontando il lavoro con la libreria di base di Protelis,
+    un linguaggio di programmazione per sistemi auto-organizzanti basato su \ac{FC},
+
+Dal lavoro ottenuto con lo sviluppo dell'algoritmo,
+    è stato possibile sottoportare un paper alla conferenza ``\emph{Autonomic Computing and Self-Organizing Systems}'' (ACSOS) 2024,
+    intitolato ``\emph{An Aggregate Vascular Morphogenesis Controller for Engineered Self-Organising Spatial Structures}'',
+    che propone un modello alternativo al \ac{vmc} proposto in letteratura,
+    sviluppato con \ck{}.
+%
+Per poter validare il lavoro svolto, è stata necessaria l'integrazione con un simulatore,
+    per controllare la correttezza del sistema e comprenderne il comportamento in scenari diversi.
+%
+Ciò ha portato dunque ad una prima versione rudimentale del task T4, ovvero l'integrazione con un ambiente di simulazione.
+%
+Come ambiente di simulazione, è stato deciso di integrare \ck{} con \emph{Alchemist},
+    un meta-simulatore per pervasive computing e sistemi distribuiti,
+    basato su astrazioni generali che possono essere mappate a casi d'uso specifici.
+%
+Data l'integrazione con \emph{Alchemist}, è stato possibile creare alcuni esperimenti nell'ambito di \ac{vmc},
+    sempre presentati ad ACSOS 2024, che hanno permesso di validare il lavoro svolto \footnote{
+    Gli esperimenti sono open source ed è possibile visionarli al seguente link \url{https://github.com/angelacorte/vmc-experiments}.
+}.
+
+\subsection{Targeting multiplatform [Task T3]}\label{subsec:task-t3-[targeting-multiplatform]}
+Per quanto riguarda il targeting delle varie piattaforme,
+    sono stati implementati i test usando la libreria \emph{Kotest},
+    una libreria di testing per Kotlin che permette di scrivere test in modo conciso e leggibile.
+%
+I test vengono eseguiti automaticamente ad ogni push sul repository, grazie all'integrazione con GitHub Actions in modalità \ac{cicd}.
+
+Il \ac{dsl} è dunque testato con esiti positivi su JVM, JS, Nativo ed emulatore di iOS, watchOS e tvOS.
+%
+Al momento non sono ancora presenti i test per Android, che verranno sviluppati in seguito,
+    non si prevedono però particolari problemi di compatibilità in quanto Android è basato su JVM.
 
 \section{Prossimi obiettivi}\label{sec:prossimi-obiettivi}
 
 %completamento t1 t3
 %implementazione standard library in contrapposizione a quella di protelis -francia
 %ulteriori sviluppi di t4
+%allineamento debug-friendly
 %investigare integrazione con pulverization
 
 
