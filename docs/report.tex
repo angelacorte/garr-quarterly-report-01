@@ -1,10 +1,21 @@
-\documentclass[12pt,a4paper,openright]{report}
-\usepackage[italian]{babel}
+\documentclass[13pt, a4paper]{article}
 \usepackage[utf8]{inputenc}
+\usepackage{fontenc}
+\usepackage{xcolor}
 \usepackage{hyperref}
-\usepackage{url}
-%\usepackage{natbib}
+\usepackage[italian]{babel}
+\usepackage[inline]{enumitem}
 \usepackage{graphicx}
+\usepackage{cleveref}
+
+\setlist[enumerate,1]{label=\arabic*}
+\setlist[enumerate,2]{label=\theenumi.\arabic*}
+\setlist[enumerate,3]{label=\theenumii.\arabic*}
+
+\graphicspath{ {res/} }
+\usepackage{url}
+\usepackage{acronym}
+%\usepackage{natbib}
 \usepackage{makeidx}
 \usepackage{listings}
 \usepackage[square,numbers,sort]{natbib}
@@ -16,31 +27,35 @@
 \newcommand{\versionminor}{1}
 \newcommand{\versionpatch}{2}
 \newcommand{\version}{\versionmajor.\versionminor.\versionpatch}
+\newenvironment{inlinelist}{\begin{enumerate*}[label=\emph{(\roman*)}]}{\end{enumerate*}}
 \typeout{Document version: \version}
 
+% acronyms
+\acrodef{FC}{Field Calculus}
+\acrodef{AC}{Aggregate Computing}
+\acrodef{dsl}[DSL]{Domain Specific Language}
+\newcommand{\ck}{\emph{Collektive}}
+
 \title{\LARGE
-    TITLE \\ \small SUBTITLE
+    Un approccio unificante alla programmazione di dispositivi eterogenei nell'edge-cloud continuum \\ \small Prima relazione trimestrale di progetto
 }
 
 \author{
-   author 01 \\ \small email
+   Borsista: \\Angela Cortecchia \\ \small angela.cortecchia@unibo.it
     \and
-    author 02 \\ \small email
+    Tutor accademico: \\Danilo Pianini \\ \small danilo.pianini@unibo.it
 }
 
-\date{\small Academic year}
-\makeindex
+%\date{\small Academic year}
+%\makeindex
 
 \begin{document}
 \maketitle
-
-\tableofcontents
-
+\clearpage
 \input{sections/sec01.tex}
-\input{sections/sec02.tex}
-\input{sections/sec03.tex}
 % add more ....
 
+\cite[none]{none}
 \bibliographystyle{plain}
 \bibliography{bibliography}
 
