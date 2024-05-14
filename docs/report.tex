@@ -164,20 +164,25 @@ La comunicazione fra dispositivi in \ac{AC} è fondata sul concetto di ``allinea
 La semantica del \ac{FC} è definita compositiva ed i messaggi scambiati tra vicini vengono automaticamente abbinati
     allo stesso costrutto del programma, determinato da un processo chiamato allineamento.
 %
-Ogni costrutto genera un ``export'', un valore di dati da inviare ai vicini, creando quindi un enriched \ac{ast} fino a quel costrutto.
+Ogni costrutto genera un ``export'', un valore di dati da inviare ai vicini, creando quindi un enriched \ac{ast} fino a quel costrutto. %todo riscrivi
 %
 Questi export vengono raccolti in un messaggio da trasmettere ai vicini, che può essere modellato come
-    un albero ordinato di valori ottenuti durante la valutazione di ogni sottoespressione del programma.
+    un albero ordinato di valori ottenuti durante la valutazione di ogni sottoespressione del programma. %todo riscrivi
 
 Il meccanismo di allineamento assicura che ogni sotto-programma di un dispositivo sia abbinato al corrispondente dei vicini,
     seguendo un percorso identico nell'albero di valutazione,
     permettendo cosi di far comunicare i dispositivi allineati tra di loro.
 
-PERCHÉ???????
+Alcuni approcci per la gestione di allineamento prevedono l'uso di un meccanismo esplicito (come nel linguaggio FCPP~\cite{FCPP}),
+che prevede di definire esplicitamente chiamate di funzioni per eseguire l'allineamento,
+rendendo il codice più verboso e meno trasparente,
+oppure non supportano la reificazione dei campi computazionali, come in ScaFi~\cite{ScaFi}.
 
-Per fare ciò, è stato implementato un plugin per il compilatore di Kotlin, che si occupa di annotare le funzioni visitate
-    durante la valutazione del programma, in modo da poter creare un path di esecuzione che permetta di allineare i dispositivi
-    tra di loro.
+\ck{} si propone di risolvere questo problema in modo trasparente e automatico, attraverso l'estensione del compilatore di Kotlin
+tramite un plugin.
+%
+Il plugin del compilatore implementato si occupa di annotare le funzioni visitate durante la valutazione del programma,
+in modo da poter creare un path di esecuzione che permetta di allineare i dispositivi tra di loro.
 
 \subsection{Costruzione di una standard library [Task T2]}\label{subsec:task-t2-[costruzione-di-una-standard-library]}
 
@@ -274,11 +279,24 @@ Come obiettivi per i prossimi tre mesi di lavoro, ovvero nella \Cref{fig:timelin
 Gli sviluppi dell'integrazione con l'ambiente di simulazione (task T4) e della standard library (task T2) verranno portati
     avanti, con l'obiettivo di implementare funzionalità più complesse.
 
-Inoltre, si prevede di implementare un meccanismo di allineamento più debug-friendly,
-    per permettere una migliore comprensione del comportamento dei dispositivi durante l'esecuzione del programma.
+Durante lo sviluppo della generalizzazione del modello \ac{vmc}, è stato indivuduato un problema di chiarezza in fase di debugging,
+il path dell'allineamento di varie lambda innestate creato dal plugin del compilatore non è facilmente comprensibile
+agli occhi di qualcuno che non conosce il funzionamento interno del plugin.
+
+La figura~\ref{fig:alignment} mostra vari utilizzi innestati di funzioni lambda, ognuna delle quali ha come path di esecuzione
+``$\$1$'', rendendo poco chiaro il comportamento del programma.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/alignment}
+    \caption{Screenshot del meccanismo di allineamento.}
+    \label{fig:alignment}
+\end{figure}
+
+Per risolvere questo problema, si prevede di implementare un meccanismo di allineamento più debug-friendly,
+    che permetta di visualizzare in modo chiaro il comportamento dei dispositivi durante l'esecuzione del programma.
 
 Come attuale lavoro in svolgimento c'è anche la stesura di un altro articolo, che verrà presentato alla conferenza
-    ``\emph{Distributed Simulation in the Space Domain}'' (DS-RT) 2024
+    ``\emph{Distributed Simulation and Real Time Applications}'' (DS-RT) 2024
     \footnote{\url{http://ds-rt.com/2024/}},
     per il quale verranno sviluppate simulazioni di programmi implementati con \ck{} in un ambiente di simulazione distribuito.
 
@@ -288,7 +306,7 @@ dove sono in corso
     utilizzato per suddividere il comportamento complessivo del sistema
 in piccoli pezzi il cui deployment può essere determinato a runtime.
 %
-Questa collaborazione potrebbe portare a una posticipazione dei task inerenti alle demo, ma permetterebbe di sviluppare
+Questa collaborazione potrebbe portare a una posticipazione dei task inerenti alle demo (T6, T7, T8), ma permetterebbe di sviluppare
     un approccio più generale e flessibile per la programmazione di dispositivi eterogenei nell'edge-cloud continuum.
 
 %%%%%%%%%%%%%%%%%%%%end%%%%%%%%%%%%%%%%%%%%
