@@ -86,14 +86,14 @@ La costruzione di un sistema con obiettivo globale a partire dal design fatto di
 
 Quindi,
 questo progetto si fonda sull'idea di sostituire o complementare l'attuale modello ``device centrico'' al design di questo tipo di sistemi
-con approccio \emph{collettivo} basato sulla programmazione macroscopica~\cite{casadei, JLAMP2019}
+con approccio \emph{collettivo} basato sulla programmazione macroscopica~\cite{casadei22, JLAMP2019}
 usando tecniche di \emph{\ac{AC}}~\cite{BealIEEEComputer2015}.
 %
 \ac{AC} è un paradigma di programmazione che permette di definire il comportamento di multipli dispositivi trattandoli
 come un unico sistema distribuito nello spazio e nel tempo,
 il protocollo di interazione che definisce l'applicazione viene derivato dalla struttura stessa del programma..
 %
-\ac{AC} si fonda sul \ac{FC}~\cite{a-higher-order-calculus-of-computational-fields(TOCL)},
+\ac{AC} si fonda sul \ac{FC}~\cite{TOCL2019},
 che consente di esprimere il comportamento auto-organizzante di reti
 di dispositivi come funzioni riutilizzabili che operano sui campi, dette ``costrutti'' o ``blocchi''.
 
@@ -103,9 +103,9 @@ basato sui concetti di \ac{AC} e \ac{FC} ed implementato in Kotlin Mulitplatform
 che permetta di scrivere codice in puro Kotlin e di compilarlo per diverse piattaforme:
 come \ac{JVM}, Javascript, nativo (per multipli target e sistemi operativi), iOS, e Android.
 
-\section{Stato del progetto a M3/12}\label{sec:obiettivi-raggiunti}
+\section{Stato del progetto a M3/12}\label{sec:stato-del-progetto-a-m3/12}
 
-Nella \Cref{fig:timeline} è mostrata la timeline indicativa del progetto, con i task da svolgere e la relativa durata.
+Nella figura~\ref{fig:timeline} è mostrata la timeline indicativa del progetto, con i task da svolgere e la relativa durata.
 %
 Al momento ci troviamo tra M3 e M4, in corrispondenza della linea arancione.
 %
@@ -164,22 +164,20 @@ La comunicazione fra dispositivi in \ac{AC} è fondata sul concetto di ``allinea
 La semantica del \ac{FC} è definita compositiva ed i messaggi scambiati tra vicini vengono automaticamente abbinati
     allo stesso costrutto del programma, determinato da un processo chiamato allineamento.
 %
-Ogni costrutto genera un ``export'', un valore di dati da inviare ai vicini, creando quindi un enriched \ac{ast} fino a quel costrutto. %todo riscrivi
-%
-Questi export vengono raccolti in un messaggio da trasmettere ai vicini, che può essere modellato come
-    un albero ordinato di valori ottenuti durante la valutazione di ogni sottoespressione del programma. %todo riscrivi
+Ogni costrutto genera un ``field'', un campo computazionale sul quale vengono eseguiti i calcoli, che viene
+associato ad un ``path'' di esecuzione e successivamente inviato ai vicini.
 
 Il meccanismo di allineamento assicura che ogni sotto-programma di un dispositivo sia abbinato al corrispondente dei vicini,
     seguendo un percorso identico nell'albero di valutazione,
     permettendo cosi di far comunicare i dispositivi allineati tra di loro.
 
-Alcuni approcci per la gestione di allineamento prevedono l'uso di un meccanismo esplicito (come nel linguaggio FCPP~\cite{FCPP}),
-che prevede di definire esplicitamente chiamate di funzioni per eseguire l'allineamento,
+Alcuni linguaggi che implementano la semantica del \ac{FC}, gestiscono l'allineamento in maniera esplicita (come nel linguaggio FCPP~\cite{fcpp}),
+cioè richiedono che l'utente definisca esplicitamente le chiamate di funzioni per eseguire l'allineamento,
 rendendo il codice più verboso e meno trasparente,
-oppure non supportano la reificazione dei campi computazionali, come in ScaFi~\cite{ScaFi}.
+altri invece non supportano la reificazione dei field, come in ScaFi~\cite{scafi}.
 
-\ck{} si propone di risolvere questo problema in modo trasparente e automatico, attraverso l'estensione del compilatore di Kotlin
-tramite un plugin.
+\ck{} si propone di gestire l'allineamento in modo trasparente e automatico, mantenendo la reificazione dei field,
+attraverso l'estensione del compilatore di Kotlin tramite un plugin.
 %
 Il plugin del compilatore implementato si occupa di annotare le funzioni visitate durante la valutazione del programma,
 in modo da poter creare un path di esecuzione che permetta di allineare i dispositivi tra di loro.
@@ -215,13 +213,14 @@ Implementando l'algoritmo con \ck{},
 è stato possibile identificare le funzionalità chiave da cui partire per costruire la standard library.
 %
 In particolare,
-sono stati identificati alcuni metodi di riduzione dei campi computazionali, TODO.
+sono stati identificati alcuni metodi di riduzione dei campi computazionali, come ad esempio la somma tra field
+e funzioni che permettano di filtrare il field in base a condizioni passate come parametri.
 %
-Inoltre, sono stati utilizzati i blocchi di base presentati in \cite{TOMACS}:
+Inoltre, sono stati utilizzati i blocchi di base presentati in~\cite{TOMACS2018}:
 gradiente e gradient-cast, converge-cast, e sparse choice (processo di leader election).
 %
-Quest'ultimo è stato implementato come bounded election~\cite{ACSOS},
-recentemente dimostrato essere auto-stabilizzante~\cite{Dijkstra}.
+Quest'ultimo è stato implementato come bounded election~\cite{PianiniCV22},
+recentemente dimostrato essere auto-stabilizzante~\cite{Dijkstra74}.
 
 Dal lavoro,
 ottenuto con lo sviluppo dell'algoritmo,
@@ -230,7 +229,7 @@ svolto con la collaborazione del gruppo di ricerca ospitante,
 ``\emph{Autonomic Computing and Self-Organizing Systems}'' (ACSOS) 2024\footnote{\url{https://2024.acsos.org}}
 (il manoscritto è attualmente in revisione).
 
-\subsection{Modifica al programma: Task T4}
+\subsection{Modifica al programma: Task T4}\label{subsec:modifica-al-programma:-task-t4}
 
 Per poter validare il lavoro svolto, è stata necessaria l'integrazione con un simulatore,
     per controllare la correttezza del sistema e comprenderne il comportamento in scenari diversi.
@@ -271,13 +270,14 @@ si fa affidamento su quelli \ac{JVM}
 %allineamento debug-friendly
 %investigare integrazione con pulverization
 
-Come obiettivi per i prossimi tre mesi di lavoro, ovvero nella \Cref{fig:timeline} tra M6 e M7,
+Come obiettivi per i prossimi tre mesi di lavoro, ovvero nella figura~\ref{fig:timeline} tra M6 e M7,
     si prevede di completare il task T1, ovvero la progettazione del \ac{dsl},
     ed il task T3, ovvero il targeting multiplatform,
     aspirando all'effettivo testing del \ac{dsl} su Android e piattaforme iOS fisiche.
 %
 Gli sviluppi dell'integrazione con l'ambiente di simulazione (task T4) e della standard library (task T2) verranno portati
-    avanti, con l'obiettivo di implementare funzionalità più complesse.
+avanti, con l'obiettivo di implementare funzionalità come, ad esempio, funzioni di broadcast,
+calcolo di un gradiente all'interno di una specifica regione e l'individuazione di canali in corrispondenza di percorsi minimi tra due punti.
 
 Durante lo sviluppo della generalizzazione del modello \ac{vmc}, è stato indivuduato un problema di chiarezza in fase di debugging,
 il path dell'allineamento di varie lambda innestate creato dal plugin del compilatore non è facilmente comprensibile
@@ -288,7 +288,7 @@ La figura~\ref{fig:alignment} mostra vari utilizzi innestati di funzioni lambda,
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{images/alignment}
-    \caption{Screenshot del meccanismo di allineamento.}
+    \caption{Esempio di path generato dal plugin del compilatore visto in fase di debugging.}
     \label{fig:alignment}
 \end{figure}
 
