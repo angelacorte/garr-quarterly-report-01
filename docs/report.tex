@@ -76,19 +76,19 @@ La diversa natura di questi dispositivi può portare a problemi di interoperabil
 Possono trovare applicazioni in vari contesti diversi, come ad esempio \emph{smart cities}, \emph{swarm robotics} e \emph{crowd management},
     includendo dispositivi di tipo wearable come smartwatch e smartphone.
 
-La gestione del singolo dispositivo in questi contesti non è banale, possono ad esempio essere presenti 200 o più dispositivi
+La gestione del singolo dispositivo in questi contesti non è banale, possono ad esempio essere presenti $200$ o più dispositivi
     connessi tra loro all'interno di una rete.
 %
 Gestirli tutti individualmente porterebbe a problemi di scalabilità, manutenibilità ed etereogeneità.
 
-Per questi motivi si vuole passare dall'approccio classico con ``device centrico'', ovvero dove il programma è scritto per il singolo dispositivo,
-    ad un approccio collettivo basato sulla programmazione macroscopica del comportamento dei dispositivi,
-    usando tecniche di \emph{\ac{AC}}.
+Per questi motivi si vuole passare dall'approccio attuale definito classico con ``device centrico'', ovvero dove il programma è scritto per il singolo dispositivo,
+    ad un approccio \emph{collettivo} basato sulla programmazione macroscopica del comportamento dei dispositivi,
+    usando tecniche di \emph{\ac{AC}}~\cite{BealIEEEComputer2015}.
 
 \ac{AC} è un paradigma di programmazione che permette di definire un unico comportamento di un insieme di dispositivi,
     definendo l'interazione fra loro.
 %
-È fondato sull'astrazione del \ac{FC} che consente di esprimere il comportamento auto-organizzante di reti
+È fondato sull'astrazione del \ac{FC}~\cite{JLAMP2019} che consente di esprimere il comportamento auto-organizzante di reti
     di dispositivi come funzioni riutilizzabili che operano sui campi, dette ``costrutti'' o ``blocchi''.
 
 Per fare ciò, viene sviluppato un \ac{dsl}, denominato \ck{}, basato sui concetti di \ac{AC} e \ac{FC} ed implementato in Kotlin Mulitplatform,
@@ -116,7 +116,7 @@ Per prima cosa è servito capire quali fossero effettivamente i costrutti necess
     Repository con codice open source visitabile al seguente link \url{https://github.com/Collektive/collektive}.
 }.
 %
-Tra i vari approcci proposti per l'implementazione del \ac{FC}, è stato scelto di utilizzare \ac{xc}.
+Tra i vari approcci proposti per l'implementazione del \ac{FC}, è stato scelto di utilizzare \ac{xc}~\cite{AudritoCDSV24}.
 %
 \ac{xc} è un linguaggio di programmazione sperimentale per lo sviluppo di sistemi distribuiti omogenei che segue le astrazioni
     di \ac{AC}.
@@ -176,7 +176,7 @@ Per fare ciò, è stato implementato un plugin per il compilatore di Kotlin, che
 \subsection{Costruzione di una standard library [Task T2]}\label{subsec:task-t2-[costruzione-di-una-standard-library]}
 
 Per capire quali fossero le principali funzionalità necessarie in una standard library,
-è stato deciso di implementare una generalizzazione di un noto algoritmo in letteratura, chiamato \ac{vmc},
+è stato deciso di implementare una generalizzazione di un noto algoritmo in letteratura, chiamato \ac{vmc}~\cite{ZahadatHS17},
 applicando un approccio basato su \ac{AC} e \ac{FC}, utilizzando il \ac{dsl} di \ck{}.
 
 \ac{vmc} permette di modellare la crescita di strutture artificiali nel tempo, ispirandosi alla morfogenesi delle piante.
@@ -189,7 +189,8 @@ Implementando l'algoritmo con \ck{}, è stato possibile identificare le funziona
     un linguaggio di programmazione per sistemi auto-organizzanti basato su \ac{FC},
 
 Dal lavoro ottenuto con lo sviluppo dell'algoritmo,
-    è stato possibile sottoportare un articolo alla conferenza ``\emph{Autonomic Computing and Self-Organizing Systems}'' (ACSOS) 2024,
+    è stato possibile sottoportare un articolo alla conferenza ``\emph{Autonomic Computing and Self-Organizing Systems}'' (ACSOS) 2024
+    \footnote{\url{https://2024.acsos.org}},
     intitolato ``\emph{An Aggregate Vascular Morphogenesis Controller for Engineered Self-Organising Spatial Structures}'',
     che propone un modello alternativo al \ac{vmc} proposto in letteratura,
     sviluppato con \ck{}.
@@ -199,7 +200,7 @@ Per poter validare il lavoro svolto, è stata necessaria l'integrazione con un s
 %
 Ciò ha portato dunque ad una prima versione rudimentale del task T4, ovvero l'integrazione con un ambiente di simulazione.
 %
-Come ambiente di simulazione, è stato deciso di integrare \ck{} con \emph{Alchemist},
+Come ambiente di simulazione, è stato deciso di integrare \ck{} con \emph{Alchemist}~\cite{PianiniJOS2013},
     un meta-simulatore per pervasive computing e sistemi distribuiti,
     basato su astrazioni generali che possono essere mappate a casi d'uso specifici.
 %
@@ -239,12 +240,13 @@ Inoltre, si prevede di implementare un meccanismo di allineamento più debug-fri
     per permettere una migliore comprensione del comportamento dei dispositivi durante l'esecuzione del programma.
 
 Come attuale lavoro in svolgimento c'è anche la stesura di un altro articolo, che verrà presentato alla conferenza
-    ``\emph{Distributed Simulation in the Space Domain}'' (DS-RT) 2024,
+    ``\emph{Distributed Simulation in the Space Domain}'' (DS-RT) 2024
+    \footnote{\url{http://ds-rt.com/2024/}},
     per il quale verranno sviluppate simulazioni di programmi implementati con \ck{} in un ambiente di simulazione distribuito.
 
 Infine, non si esclude la possibilità di una collaborazione all'interno del gruppo di ricerca UniBo con colleghi che stanno sviluppando
-    ricerche sull'approccio ``polverizzazione'':
-    un approccio utilizzato per progettare il comportamento adattivo distribuito per sistemi cibernetici-fisici (CPS) su larga scala,
+    ricerche sull'approccio ``polverizzazione''~\cite{fi12110203}:
+    un approccio utilizzato per progettare il comportamento adattivo distribuito per Sistemi Cibernetici-Fisici (CPS) su larga scala,
     suddividendo il comportamento complessivo del sistema in piccoli pezzi di calcolo gestibili strettamente legati a sensori, attuatori e componenti vicini.
 %
 Questa collaborazione potrebbe portare a una posticipazione dei task inerenti alle demo, ma permetterebbe di sviluppare
@@ -254,7 +256,6 @@ Questa collaborazione potrebbe portare a una posticipazione dei task inerenti al
 
 % add more ....
 
-\cite[none]{none}
 \bibliographystyle{plain}
 \bibliography{bibliography}
 
