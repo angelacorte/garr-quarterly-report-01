@@ -40,6 +40,7 @@
 \acrodef{cd}[CD]{\emph{Continuous Deployment}}
 \acrodef{cicd}[CI/CD]{\ac{ci} and \ac{cd}}
 \acrodef{vmc}[VMC]{Vascular Morphogenesis Controller}
+\acrodef{JVM}{Java Virtual Machine}
 
 \newcommand{\ck}{\emph{Collektive}}
 
@@ -91,7 +92,7 @@ usando tecniche di \emph{\ac{AC}}~\cite{BealIEEEComputer2015}.
 %
 \ac{AC} è un paradigma di programmazione che permette di definire il comportamento di multipli dispositivi trattandoli
 come un unico sistema distribuito nello spazio e nel tempo,
-il protocollo di interazione che definisce l'applicazione viene derivato dalla struttura stessa del programma..
+il protocollo di interazione che definisce l'applicazione viene derivato dalla struttura stessa del programma.
 %
 \ac{AC} si fonda sul \ac{FC}~\cite{TOCL2019},
 che consente di esprimere il comportamento auto-organizzante di reti
@@ -139,22 +140,23 @@ Astraendo da concorrenza, perdita di messaggi, protocollo di comunicazione di re
 che sussume tutte le primitive di comunicazione del \ac{FC},
 consentendo di implementare le altre primitive in modo derivato.
 %
-A partire dall'implementazione di \emph{exchange}, è stato possibile implementare le altre primitive di comunicazione del \ac{FC},
+A partire dall'implementazione di \texttt{exchanging}, è stato possibile implementare le altre primitive di comunicazione del \ac{FC},
 di seguito riassunte:
 \begin{itemize}
     \item \texttt{exchanging}: implementa lo scambio di messaggi personalizzati con stato tra dispositivi ``vicini'',
     restituendo al programma un campo computazionale che rappresenta lo stato del proprio intorno;
-    \item \emph{exchange}: versione semplificata di \texttt{exchanging} che restituisce il medesimo campo utilizzato
+    \item \texttt{exchange}: versione semplificata di \texttt{exchanging} che restituisce il medesimo campo utilizzato
     per determinare che informazione inviare ai vicini;
-    \item \emph{share}: implementato in termini di \emph{exchange}, permette di condividere un valore ai vicini, indistintamente
-    dal destinatario, restituendo al programma il valore condiviso;
-    \item \emph{sharing}: come \emph{share}, ma restituisce un valore diverso da quello condiviso;
-    \item \emph{repeat}: costrutto del \ac{FC} che permette di modellare l'evoluzione nel tempo dello stato del dispositivo.
-        In quanto non è necessaria comunicazione con i vicini, non è stato implementato in termini di \emph{exchange}.;
-    \item \emph{repeating}: come \emph{repeat}, ma restituisce un valore diverso da quello restituito dall'iterazione precedente.
-    \item \emph{neighboring}: costrutto del \ac{FC} che permette di accedere ai valori dei vicii e inviare loro informazioni,
-        permettendo così di modellare l'evoluzione dell'informazione nello spazio.
-        Implementato sia in termini di exchange che non, con differenze in termini di performance.
+    \item \texttt{sharing}: implementato in termini di \texttt{exchange}, permette di condividere un valore ai vicini indistintamente
+    dal destinatario, restituendo al programma un valore diverso da quello condiviso;
+    \item \texttt{share}: come \texttt{sharing}, ma restituisce al programma il valore che è stato condiviso con i vicini;
+    \item \texttt{repeating}: costrutto del \ac{FC} che permette di modellare l'evoluzione nel tempo dello stato del dispositivo.
+    In quanto non è necessaria comunicazione con i vicini, non è stato implementato in termini di \texttt{exchange}.
+    Restituisce al programma un valore diverso rispetto a quello su cui si effettuano le operazioni;
+    \item \texttt{repeat}: \texttt{repeating}, ma restituisce al programma il valore su cui vengono effettuati i calcoli;
+    \item \texttt{neighboring}: costrutto del \ac{FC} che permette di accedere ai valori dei vicini e inviare loro informazioni,
+    permettendo così di modellare l'evoluzione dell'informazione nello spazio.
+    Implementato sia in termini di \texttt{exchanging} che non, con differenze in termini di performance.
 \end{itemize}
 
 \paragraph{Compiler Plugin}
@@ -169,10 +171,10 @@ associato ad un ``path'' di esecuzione e successivamente inviato ai vicini.
 
 Il meccanismo di allineamento assicura che ogni sotto-programma di un dispositivo sia abbinato al corrispondente dei vicini,
     seguendo un percorso identico nell'albero di valutazione,
-    permettendo cosi di far comunicare i dispositivi allineati tra di loro.
+    permettendo così di far comunicare i dispositivi allineati tra di loro.
 
 Alcuni linguaggi che implementano la semantica del \ac{FC}, gestiscono l'allineamento in maniera esplicita (come nel linguaggio FCPP~\cite{fcpp}),
-cioè richiedono che l'utente definisca esplicitamente le chiamate di funzioni per eseguire l'allineamento,
+cioè richiedono che l'utente definisca esplicitamente le chiamate a funzione per eseguire l'allineamento,
 rendendo il codice più verboso e meno trasparente,
 altri invece non supportano la reificazione dei field, come in ScaFi~\cite{scafi}.
 
@@ -180,7 +182,8 @@ altri invece non supportano la reificazione dei field, come in ScaFi~\cite{scafi
 attraverso l'estensione del compilatore di Kotlin tramite un plugin.
 %
 Il plugin del compilatore implementato si occupa di annotare le funzioni visitate durante la valutazione del programma,
-in modo da poter creare un path di esecuzione che permetta di allineare i dispositivi tra di loro.
+in modo da poter creare un path di esecuzione che permetta di allineare i dispositivi tra di loro, con l'unica
+responsabilità dell'utente di importare la dipendenza del plugin nel proprio progetto.
 
 \subsection{Costruzione di una standard library [Task T2]}\label{subsec:task-t2-[costruzione-di-una-standard-library]}
 
@@ -200,7 +203,7 @@ vengono identificati i blocchi che vengono utilizzati più frequentemente,
 la loro generalizzazione andrà a comporre la libreria standard.
 
 Come primo passo,
-è stato implementata una generalizzazione di un algoritmo noto in letteratura,
+è stata implementata una generalizzazione di un algoritmo noto in letteratura,
 chiamato \ac{vmc}~\cite{ZahadatHS17},
 applicando un approccio basato su \ac{AC}, utilizzando il \ac{dsl} \ck{}.
 %
@@ -255,7 +258,7 @@ Per quanto riguarda il targeting delle varie piattaforme,
 %
 I test vengono eseguiti automaticamente ad ogni push sul repository, grazie all'integrazione con GitHub Actions in modalità \ac{cicd}.
 
-Il \ac{dsl} è dunque testato con esiti positivi su JVM, JS, Nativo ed emulatore di iOS, watchOS e tvOS.
+Il \ac{dsl} è dunque testato con esiti positivi su \ac{JVM}, Javascript, nativo ed emulatore di iOS, watchOS e tvOS.
 %
 Al momento non sono ancora presenti test specifici per Android,
 per i quali, al momento,
@@ -279,12 +282,14 @@ Gli sviluppi dell'integrazione con l'ambiente di simulazione (task T4) e della s
 avanti, con l'obiettivo di implementare funzionalità come, ad esempio, funzioni di broadcast,
 calcolo di un gradiente all'interno di una specifica regione e l'individuazione di canali in corrispondenza di percorsi minimi tra due punti.
 
-Durante lo sviluppo della generalizzazione del modello \ac{vmc}, è stato indivuduato un problema di chiarezza in fase di debugging,
-il path dell'allineamento di varie lambda innestate creato dal plugin del compilatore non è facilmente comprensibile
-agli occhi di qualcuno che non conosce il funzionamento interno del plugin.
-
+Durante lo sviluppo della generalizzazione del modello \ac{vmc}, è stato indivuduato un problema di chiarezza in fase di debugging
+inerente al path generato dal plugin del compilatore.
+%
 La figura~\ref{fig:alignment} mostra vari utilizzi innestati di funzioni lambda, ognuna delle quali ha come path di esecuzione
 ``$\$1$'', rendendo poco chiaro il comportamento del programma.
+%
+Il path creato dal plugin del compilatore, inerente all'allineamento di varie funzioni lambda innestate, non è facilmente comprensibile
+agli occhi di qualcuno che non conosce il funzionamento interno del plugin stesso.
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{images/alignment}
@@ -296,8 +301,7 @@ Per risolvere questo problema, si prevede di implementare un meccanismo di allin
     che permetta di visualizzare in modo chiaro il comportamento dei dispositivi durante l'esecuzione del programma.
 
 Come attuale lavoro in svolgimento c'è anche la stesura di un altro articolo, che verrà presentato alla conferenza
-    ``\emph{Distributed Simulation and Real Time Applications}'' (DS-RT) 2024
-    \footnote{\url{http://ds-rt.com/2024/}},
+    ``\emph{Distributed Simulation and Real Time Applications}'' (DS-RT) 2024~\footnote{\url{http://ds-rt.com/2024/}},
     per il quale verranno sviluppate simulazioni di programmi implementati con \ck{} in un ambiente di simulazione distribuito.
 
 Infine, si prevede di collaborare ulteriormente col gruppo di ricerca che ospita l'attività corrente,
