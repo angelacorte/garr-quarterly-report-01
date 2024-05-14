@@ -68,37 +68,42 @@
 
 \section{Contesto}
 \label{sec:context}
-In un contesto in cui sono sempre in maggior numero i dispositivi dotati di capacità computazionali,
-    che presentano la necessità di un'organizzazione e di un coordinamento tra loro,
-    è necessario trovare una soluzione uniforme che permetta di programmare il comportamento e la coordinazione dei dispositivi.
 
-Questi dispositivi possono essere di natura eterogenea, ovvero possono avere architetture e sistemi operativi diversi,
-    e possono essere distribuiti in un'area geografica più o meno estesa.
+Contesti recenti come l'Internet of Things e le smart city promuovono scenari
+(come la \emph{swarm robotics} ed il \emph{crowd management})
+in cui molti dispositivi,
+potenzialmente eterogenei, collaborano per raggiungere obiettivi comuni.
 %
-La diversa natura di questi dispositivi può portare a problemi di interoperabilità e di comunicazione tra di essi.
+L'eterogeneità si reifica in termini di differenti architetture,
+capacità di calcolo,
+sistemi operativi,
+disponibilità di sensori e attuatori,
+e distribuzione geografica,
+specialmente se si considerano dispositivi wearable.
 %
-Possono trovare applicazioni in vari contesti diversi, come ad esempio \emph{smart cities}, \emph{swarm robotics} e \emph{crowd management},
-    includendo dispositivi di tipo wearable come smartwatch e smartphone.
+La costruzione di un sistema con obiettivo globale a partire dal design fatto dispositivo-per-dispositivo
+è piuttosto difficile e non scalabile col numero e la varietà dei dispositivi.
 
-La gestione del singolo dispositivo in questi contesti non è banale, possono ad esempio essere presenti $200$ o più dispositivi
-    connessi tra loro all'interno di una rete.
+Quindi,
+questo progetto si fonda sull'idea di sostituire o complementare l'attuale modello ``device centrico'' al design di questo tipo di sistemi
+con approccio \emph{collettivo} basato sulla programmazione macroscopica~\cite{casadei, JLAMP2019}
+usando tecniche di \emph{\ac{AC}}~\cite{BealIEEEComputer2015}.
 %
-Gestirli tutti individualmente porterebbe a problemi di scalabilità, manutenibilità ed etereogeneità.
-
-Per questi motivi si vuole passare dall'approccio attuale definito classico con ``device centrico'', ovvero dove il programma è scritto per il singolo dispositivo,
-    ad un approccio \emph{collettivo} basato sulla programmazione macroscopica del comportamento dei dispositivi,
-    usando tecniche di \emph{\ac{AC}}~\cite{BealIEEEComputer2015}.
-
-\ac{AC} è un paradigma di programmazione che permette di definire un unico comportamento di un insieme di dispositivi,
-    definendo l'interazione fra loro.
+\ac{AC} è un paradigma di programmazione che permette di definire il comportamento di multipli dispositivi trattandoli
+come un unico sistema distribuito nello spazio e nel tempo,
+il protocollo di interazione che definisce l'applicazione viene derivato dalla struttura stessa del programma..
 %
-È fondato sull'astrazione del \ac{FC}~\cite{JLAMP2019} che consente di esprimere il comportamento auto-organizzante di reti
-    di dispositivi come funzioni riutilizzabili che operano sui campi, dette ``costrutti'' o ``blocchi''.
+\ac{AC} si fonda sul \ac{FC}~\cite{a-higher-order-calculus-of-computational-fields(TOCL)},
+che consente di esprimere il comportamento auto-organizzante di reti
+di dispositivi come funzioni riutilizzabili che operano sui campi, dette ``costrutti'' o ``blocchi''.
 
-Per fare ciò, viene sviluppato un \ac{dsl}, denominato \ck{}, basato sui concetti di \ac{AC} e \ac{FC} ed implementato in Kotlin Mulitplatform,
-    che permette di scrivere codice in Kotlin e di compilarlo per diverse piattaforme, come JVM, JS, Native, iOS e Android.
+L'obiettivo del progetto è quello di sviluppare un
+\ac{dsl} (provvisoriamente denominato \ck{}),
+basato sui concetti di \ac{AC} e \ac{FC} ed implementato in Kotlin Mulitplatform,
+che permetta di scrivere codice in puro Kotlin e di compilarlo per diverse piattaforme:
+come \ac{JVM}, Javascript, nativo (per multipli target e sistemi operativi), iOS, e Android.
 
-\section{Obiettivi raggiunti}\label{sec:obiettivi-raggiunti}
+\section{Stato del progetto a M3/12}\label{sec:obiettivi-raggiunti}
 
 Nella \Cref{fig:timeline} è mostrata la timeline indicativa del progetto, con i task da svolgere e la relativa durata.
 %
@@ -130,20 +135,19 @@ Astraendo da concorrenza, perdita di messaggi, protocollo di comunicazione di re
     che operano sui campi computazionali,
     rivelandosi un modello di calcolo ideale per il progetto.
 
-\ac{xc} è basato su una primitiva di comunicazione che permette di scambiare messaggi tra dispositivi --\emph{exchange}--,
-    con l'aspetto cruciale che può inviare messaggi con valori diversi a seconda del vicino, consentendo un'interazione
-    personalizzata tra essi.
+\ac{xc} è basato su una primitiva di comunicazione che permette di scambiare messaggi tra dispositivi e mantenere al contempo uno stato --\emph{exchange}--,
+che sussume tutte le primitive di comunicazione del \ac{FC},
+consentendo di implementare le altre primitive in modo derivato.
 %
-Utilizzando questo costrutto è possibile implementare gli altri costrutti del \ac{FC}.
-
-Identificato dunque il costrutto di base del \ac{dsl}, è stato possibile implementare altri costrutti per la comuncazione
-    con peculiarità diverse, quali:
+A partire dall'implementazione di \emph{exchange}, è stato possibile implementare le altre primitive di comunicazione del \ac{FC},
+di seguito riassunte:
 \begin{itemize}
-    \item \emph{exchange}: per lo scambio di messaggi personalizzati tra dispositivi, restituendo al programma lo stesso
-        valore che viene inviato ai vicini;
-    \item \emph{exchanging}: come \emph{exchange}, ma restituisce un valore diverso da quello inviato;
+    \item \texttt{exchanging}: implementa lo scambio di messaggi personalizzati con stato tra dispositivi ``vicini'',
+    restituendo al programma un campo computazionale che rappresenta lo stato del proprio intorno;
+    \item \emph{exchange}: versione semplificata di \texttt{exchanging} che restituisce il medesimo campo utilizzato
+    per determinare che informazione inviare ai vicini;
     \item \emph{share}: implementato in termini di \emph{exchange}, permette di condividere un valore ai vicini, indistintamente
-        dal destinatario, restituendo al programma il valore condiviso;
+    dal destinatario, restituendo al programma il valore condiviso;
     \item \emph{sharing}: come \emph{share}, ma restituisce un valore diverso da quello condiviso;
     \item \emph{repeat}: costrutto del \ac{FC} che permette di modellare l'evoluzione nel tempo dello stato del dispositivo.
         In quanto non è necessaria comunicazione con i vicini, non è stato implementato in termini di \emph{exchange}.;
@@ -153,13 +157,9 @@ Identificato dunque il costrutto di base del \ac{dsl}, è stato possibile implem
         Implementato sia in termini di exchange che non, con differenze in termini di performance.
 \end{itemize}
 
-L'utilizzo di \ac{xc} porta un'innovazione aggiuntiva, in quanto al momento lo stato dell'arte non prevede l'implementazione di
-    questa primitiva all'interno di un \ac{dsl}.
-
-
 \paragraph{Compiler Plugin}
 
-Per permettere una corretta comunicazione dei dispositivi, esiste il concetto di ``allineamento''.
+La comunicazione fra dispositivi in \ac{AC} è fondata sul concetto di ``allineamento''.
 %
 La semantica del \ac{FC} è definita compositiva ed i messaggi scambiati tra vicini vengono automaticamente abbinati
     allo stesso costrutto del programma, determinato da un processo chiamato allineamento.
@@ -173,40 +173,72 @@ Il meccanismo di allineamento assicura che ogni sotto-programma di un dispositiv
     seguendo un percorso identico nell'albero di valutazione,
     permettendo cosi di far comunicare i dispositivi allineati tra di loro.
 
+PERCHÉ???????
+
 Per fare ciò, è stato implementato un plugin per il compilatore di Kotlin, che si occupa di annotare le funzioni visitate
     durante la valutazione del programma, in modo da poter creare un path di esecuzione che permetta di allineare i dispositivi
     tra di loro.
 
 \subsection{Costruzione di una standard library [Task T2]}\label{subsec:task-t2-[costruzione-di-una-standard-library]}
 
-Per capire quali fossero le principali funzionalità necessarie in una standard library,
-è stato deciso di implementare una generalizzazione di un noto algoritmo in letteratura, chiamato \ac{vmc}~\cite{ZahadatHS17},
-applicando un approccio basato su \ac{AC} e \ac{FC}, utilizzando il \ac{dsl} di \ck{}.
+Le primitive esposte da \ac{xc}, sebbene dimostratamente universali,
+sono, all'atto pratico dell'ingegneria dei sistemi software,
+di basso livello e non facilmente utilizzabili direttamente.
+%
+Di conseguenza, sfruttando la componibilità delle primitive di \ac{FC},
+si vuole costruire una libreria standard di comportamenti auto-organizzanti,
+che sarà (grazie alla composizione funzionale) riutilizzabile per costruire comportamenti più complessi.
 
-\ac{vmc} permette di modellare la crescita di strutture artificiali nel tempo, ispirandosi alla morfogenesi delle piante.
+La selezione delle funzionalità da inserire nella standard library
+è ancora in corso,
+e l'approccio scelto è di tipo bottom-up:
+a partire dalla realizzazione di casi di studio,
+vengono identificati i blocchi che vengono utilizzati più frequentemente,
+la loro generalizzazione andrà a comporre la libreria standard.
+
+Come primo passo,
+è stato implementata una generalizzazione di un algoritmo noto in letteratura,
+chiamato \ac{vmc}~\cite{ZahadatHS17},
+applicando un approccio basato su \ac{AC}, utilizzando il \ac{dsl} \ck{}.
+%
+\ac{vmc} permette di modellare la crescita di strutture artificiali nel tempo ispirandosi alla morfogenesi delle piante.
 %
 L'algoritmo si basa su un modello di distribuzione delle risorse in strutture ad albero,
     dove i rami competono per le risorse per crescere, in base al successo ottenuto come input da sensori nell'ambiente.
 
-Implementando l'algoritmo con \ck{}, è stato possibile identificare le funzionalità chiave da cui partire per costruire la standard library,
-    confrontando il lavoro con la libreria di base di Protelis,
-    un linguaggio di programmazione per sistemi auto-organizzanti basato su \ac{FC},
-
-Dal lavoro ottenuto con lo sviluppo dell'algoritmo,
-    è stato possibile sottoportare un articolo alla conferenza ``\emph{Autonomic Computing and Self-Organizing Systems}'' (ACSOS) 2024
-    \footnote{\url{https://2024.acsos.org}},
-    intitolato ``\emph{An Aggregate Vascular Morphogenesis Controller for Engineered Self-Organising Spatial Structures}'',
-    che propone un modello alternativo al \ac{vmc} proposto in letteratura,
-    sviluppato con \ck{}.
+Implementando l'algoritmo con \ck{},
+è stato possibile identificare le funzionalità chiave da cui partire per costruire la standard library.
 %
+In particolare,
+sono stati identificati alcuni metodi di riduzione dei campi computazionali, TODO.
+%
+Inoltre, sono stati utilizzati i blocchi di base presentati in \cite{TOMACS}:
+gradiente e gradient-cast, converge-cast, e sparse choice (processo di leader election).
+%
+Quest'ultimo è stato implementato come bounded election~\cite{ACSOS},
+recentemente dimostrato essere auto-stabilizzante~\cite{Dijkstra}.
+
+Dal lavoro,
+ottenuto con lo sviluppo dell'algoritmo,
+svolto con la collaborazione del gruppo di ricerca ospitante,
+è stato possibile realizzare un articolo scientifico alla conferenza
+``\emph{Autonomic Computing and Self-Organizing Systems}'' (ACSOS) 2024\footnote{\url{https://2024.acsos.org}}
+(il manoscritto è attualmente in revisione).
+
+\subsection{Modifica al programma: Task T4}
+
 Per poter validare il lavoro svolto, è stata necessaria l'integrazione con un simulatore,
     per controllare la correttezza del sistema e comprenderne il comportamento in scenari diversi.
 %
-Ciò ha portato dunque ad una prima versione rudimentale del task T4, ovvero l'integrazione con un ambiente di simulazione.
+\ck{} è stato quindi rudimentalmente integrato con un ambiente di simulazione noto,
+anticipando di qualche mese l'inizio del task T4, ovvero l'integrazione con un ambiente di simulazione.
 %
-Come ambiente di simulazione, è stato deciso di integrare \ck{} con \emph{Alchemist}~\cite{PianiniJOS2013},
-    un meta-simulatore per pervasive computing e sistemi distribuiti,
-    basato su astrazioni generali che possono essere mappate a casi d'uso specifici.
+Come ambiente di simulazione, è stato scelto \emph{Alchemist}~\cite{PianiniJOS2013},
+un meta-simulatore per pervasive computing e sistemi distribuiti,
+basato su astrazioni generali che possono essere mappate a casi d'uso specifici.
+%
+Il simulatore è sviluppato e mantenuto dal gruppo di ricerca ospitante,
+che ha fornito supporto per l'integrazione.
 %
 Data l'integrazione con \emph{Alchemist}, è stato possibile creare alcuni esperimenti nell'ambito di \ac{vmc},
     sempre presentati ad ACSOS 2024, che hanno permesso di validare il lavoro svolto \footnote{
@@ -215,15 +247,16 @@ Data l'integrazione con \emph{Alchemist}, è stato possibile creare alcuni esper
 
 \subsection{Targeting multiplatform [Task T3]}\label{subsec:task-t3-[targeting-multiplatform]}
 Per quanto riguarda il targeting delle varie piattaforme,
-    sono stati implementati i test usando la libreria \emph{Kotest},
-    una libreria di testing per Kotlin che permette di scrivere test in modo conciso e leggibile.
+    sono stati implementati test che verificano il funzionamento su più piattaforme.
 %
 I test vengono eseguiti automaticamente ad ogni push sul repository, grazie all'integrazione con GitHub Actions in modalità \ac{cicd}.
 
 Il \ac{dsl} è dunque testato con esiti positivi su JVM, JS, Nativo ed emulatore di iOS, watchOS e tvOS.
 %
-Al momento non sono ancora presenti i test per Android, che verranno sviluppati in seguito,
-    non si prevedono però particolari problemi di compatibilità in quanto Android è basato su JVM.
+Al momento non sono ancora presenti test specifici per Android,
+per i quali, al momento,
+si fa affidamento su quelli \ac{JVM}
+(Android è in grado di importare ed eseguire software scritto per \ac{JVM}).
 
 \section{Prossimi obiettivi}\label{sec:prossimi-obiettivi}
 
@@ -237,7 +270,7 @@ Come obiettivi per i prossimi tre mesi di lavoro, ovvero nella \Cref{fig:timelin
     si prevede di completare il task T1, ovvero la progettazione del \ac{dsl},
     ed il task T3, ovvero il targeting multiplatform,
     aspirando all'effettivo testing del \ac{dsl} su Android e piattaforme iOS fisiche.
-
+%
 Gli sviluppi dell'integrazione con l'ambiente di simulazione (task T4) e della standard library (task T2) verranno portati
     avanti, con l'obiettivo di implementare funzionalità più complesse.
 
@@ -249,10 +282,11 @@ Come attuale lavoro in svolgimento c'è anche la stesura di un altro articolo, c
     \footnote{\url{http://ds-rt.com/2024/}},
     per il quale verranno sviluppate simulazioni di programmi implementati con \ck{} in un ambiente di simulazione distribuito.
 
-Infine, non si esclude la possibilità di una collaborazione all'interno del gruppo di ricerca UniBo con colleghi che stanno sviluppando
-    ricerche sull'approccio ``polverizzazione''~\cite{fi12110203}:
-    un approccio utilizzato per progettare il comportamento adattivo distribuito per Sistemi Cibernetici-Fisici (CPS) su larga scala,
-    suddividendo il comportamento complessivo del sistema in piccoli pezzi di calcolo gestibili strettamente legati a sensori, attuatori e componenti vicini.
+Infine, si prevede di collaborare ulteriormente col gruppo di ricerca che ospita l'attività corrente,
+dove sono in corso
+    ricerche sull'approccio a ``polverizzazione''~\cite{fi12110203},
+    utilizzato per suddividere il comportamento complessivo del sistema
+in piccoli pezzi il cui deployment può essere determinato a runtime.
 %
 Questa collaborazione potrebbe portare a una posticipazione dei task inerenti alle demo, ma permetterebbe di sviluppare
     un approccio più generale e flessibile per la programmazione di dispositivi eterogenei nell'edge-cloud continuum.
